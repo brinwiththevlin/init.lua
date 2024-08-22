@@ -14,6 +14,3 @@ end
 
 vim.keymap.set('t', '<Esc>', "<C-\\><C-n>")
 vim.keymap.set('t', '<C-w>', "<C-\\><C-n><C-w>")
-
--- minimize terminal split
-vim.keymap.set('n', '<C-g>', "3<C-w>_")
