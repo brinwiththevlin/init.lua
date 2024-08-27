@@ -1,7 +1,15 @@
 return {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
+    dependencies = {
+        "p00f/nvim-ts-rainbow"
+    },
     config = function()
+        local function get_color_from_group(group, attr)
+            local color = vim.api.nvim_get_hl_by_name(group, true)[attr]
+            return string.format("#%06x", color)
+        end
+
         require("nvim-treesitter.configs").setup({
             -- A list of parser names, or "all"
             ensure_installed = {
@@ -30,13 +38,28 @@ return {
                 -- Instead of true it can also be a list of languages
                 additional_vim_regex_highlighting = { "markdown" },
             },
+            rainbow = {
+                enable = true,
+                extended_mode = true,
+                max_file_lines = nil,
+                -- colors = {
+                --     get_color_from_group('Keyword', 'foreground'), -- 1st level
+                --     get_color_from_group('String', 'foreground'), -- 2nd level
+                --     get_color_from_group('Function', 'foreground'), -- 3rd level
+                --     get_color_from_group('Constant', 'foreground'), -- 4th level
+                --     get_color_from_group('Type', 'foreground'), -- 5th level
+                --     get_color_from_group('Identifier', 'foreground'), -- 6th level
+                --     get_color_from_group('Statement', 'foreground'), -- 7th level               },
+                -- },
+                termcolors = {} -- Leave this empty to avoid overriding terminal colors
+            }
         })
 
         local treesitter_parser_config = require("nvim-treesitter.parsers").get_parser_configs()
         treesitter_parser_config.templ = {
             install_info = {
                 url = "https://github.com/vrischmann/tree-sitter-templ.git",
-                files = {"src/parser.c", "src/scanner.c"},
+                files = { "src/parser.c", "src/scanner.c" },
                 branch = "master",
             },
         }

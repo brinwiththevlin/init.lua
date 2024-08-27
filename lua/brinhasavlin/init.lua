@@ -40,7 +40,7 @@ autocmd('TextYankPost', {
     end,
 })
 
-autocmd({"BufWritePre"}, {
+autocmd({ "BufWritePre" }, {
     group = BrinhasavlinGroup,
     pattern = "*",
     command = [[%s/\s\+$//e]],
