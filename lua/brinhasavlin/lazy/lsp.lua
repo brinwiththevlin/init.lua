@@ -30,7 +30,8 @@ return {
                 "lua_ls",
                 "rust_analyzer",
                 "gopls",
-                "pyright"
+                "pyright",
+                "clangd"  -- Added clangd for C++ support
             },
             handlers = {
                 function(server_name) -- default handler (optional)
@@ -39,10 +40,8 @@ return {
                         handlers = {
                             ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
                                 border = "rounded",
-                                -- This config ensures the documentation is also displayed
                                 focusable = true,
                                 style = "minimal",
-                                border = "rounded",
                                 source = "always",
                                 header = "",
                                 prefix = "",
@@ -84,6 +83,28 @@ return {
                         }
                     }
                 end,
+
+                ["clangd"] = function()  -- Added clangd-specific setup for C++ support
+                    local lspconfig = require("lspconfig")
+                    lspconfig.clangd.setup({
+                        capabilities = capabilities,
+                        cmd = { "clangd", "--background-index", "--clang-tidy", "--suggest-missing-includes" },
+                        root_dir = lspconfig.util.root_pattern(".git", "compile_commands.json", "Makefile"),
+                        filetypes = { "c", "cpp", "objc", "objcpp" },
+                        settings = {
+                            clangd = {
+                                completion = {
+                                    detailedLabel = true
+                                },
+                                diagnostics = {
+                                    severity = {
+                                        unused_variable = "warning",
+                                    },
+                                },
+                            },
+                        },
+                    })
+                end,
             }
         })
 
@@ -122,3 +143,4 @@ return {
         })
     end
 }
+
