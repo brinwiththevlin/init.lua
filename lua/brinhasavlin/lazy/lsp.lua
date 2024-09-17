@@ -105,6 +105,8 @@ return {
                                     diagnosticMode = 'workspace',
                                     -- useLibraryCodeForTypes = true,
                                     typeCheckingMode = 'strict',
+                                    ignore = { "~/.local/share/nvim/mason/packages/basedpyright/", "anaconda3/envs/research/lib/python3.12/site-packages/" },
+                                    exclude = { "~/.local/share/nvim/mason/packages/basedpyright/", "anaconda3/envs/research/lib/python3.12/site-packages/" },
                                     diagnosticSeverityOverrides = {
                                         reportUnusedVariable = true, -- Should report unused variables
                                         reportUnusedFunction = true, -- Should report unused functions
