@@ -63,3 +63,9 @@ vim.api.nvim_set_keymap('n', '"""', 'O""""""<Esc>2hi', { noremap = true, silent 
 vim.keymap.set("n", "<leader><leader>", function()
     vim.cmd("so")
 end)
+
+vim.keymap.set(
+    "n",
+    "<leader>ee",
+    "oif err != nil {<CR>}<Esc>Oreturn err<Esc>"
+)

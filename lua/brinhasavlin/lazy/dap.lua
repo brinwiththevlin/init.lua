@@ -12,19 +12,12 @@ return {
         local dap = require 'dap'
         local dapui = require 'dapui'
         return {
-            -- Basic debugging keymaps, feel free to change to your liking!
-            { '<F5>',      dap.continue,          desc = 'Debug: Start/Continue' },
-            { '<F1>',      dap.step_into,         desc = 'Debug: Step Into' },
-            { '<F2>',      dap.step_over,         desc = 'Debug: Step Over' },
-            { '<F3>',      dap.step_out,          desc = 'Debug: Step Out' },
+            { '<F5>', dap.continue, desc = 'Debug: Start/Continue' },
+            { '<F1>', dap.step_into, desc = 'Debug: Step Into' },
+            { '<F2>', dap.step_over, desc = 'Debug: Step Over' },
+            { '<F3>', dap.step_out, desc = 'Debug: Step Out' },
             { '<leader>b', dap.toggle_breakpoint, desc = 'Debug: Toggle Breakpoint' },
-            {
-                '<leader>B',
-                function()
-                    dap.set_breakpoint(vim.fn.input 'Breakpoint condition: ')
-                end,
-                desc = 'Debug: Set Breakpoint',
-            },
+            { '<leader>B', function() dap.set_breakpoint(vim.fn.input 'Breakpoint condition: ') end, desc = 'Debug: Set Breakpoint' },
             { '<F7>', dapui.toggle, desc = 'Debug: See last session result.' },
             unpack(keys),
         }
@@ -51,7 +44,22 @@ return {
         -- Golang specific config
         require('dap-go').setup {
             delve = {
-                detached = vim.fn.has 'win32' == 0,
+                detached = true,
+            },
+        }
+
+        -- Manually add the Delve adapter
+        dap.adapters.go = {
+            type = 'executable';
+            command = 'dlv';  -- Ensure 'dlv' is in your PATH
+            args = {'dap'};
+        }
+        dap.configurations.go = {
+            {
+                type = 'go';
+                name = 'Debug';
+                request = 'launch';
+                program = '${file}';
             },
         }
 
@@ -85,21 +93,19 @@ return {
                         description = 'Enable pretty printing',
                         ignoreFailures = false
                     },
-                    -- Skip standard library functions
                     {
                         text = 'skip -function std::*',
                         description = 'Skip functions in std namespace',
                         ignoreFailures = false
                     },
-                    -- Skip system includes (e.g., C++ standard library headers)
                     {
                         text = 'skip -file /usr/include/*',
                         description = 'Skip system include files',
                         ignoreFailures = false
                     },
-                    -- You can add more skips here if necessary
                 },
             },
         }
     end,
 }
+
