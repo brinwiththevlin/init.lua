@@ -34,6 +34,13 @@ return {
                 null_ls.builtins.formatting.gofmt,
                 null_ls.builtins.formatting.goimports,
                 null_ls.builtins.diagnostics.golangci_lint,
+
+                --latex
+                null_ls.builtins.formatting.latexindent.with({
+                    extra_args = { "-sl", "tex" },
+                }),
+                null_ls.builtins.diagnostics.chktex,
+
             },
         })
     end,

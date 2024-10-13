@@ -103,26 +103,26 @@ return {
                                     autoImportCompletion = true,
                                     autoSearchPaths = true,
                                     diagnosticMode = 'workspace',
-                                    -- useLibraryCodeForTypes = true,
-                                    typeCheckingMode = 'strict',
+                                    useLibraryCodeForTypes = true,
+                                    typeCheckingMode = 'standard',
                                     ignore = { "~/.local/share/nvim/mason/packages/basedpyright/", "anaconda3/envs/research/lib/python3.12/site-packages/" },
                                     exclude = { "~/.local/share/nvim/mason/packages/basedpyright/", "anaconda3/envs/research/lib/python3.12/site-packages/" },
-                                    diagnosticSeverityOverrides = {
-                                        reportUnusedVariable = true, -- Should report unused variables
-                                        reportUnusedFunction = true, -- Should report unused functions
-                                        reportUntypedFunctionDecorator = false,
-                                        reportUntyedClassDecorator = false,
-                                        reportImplicitOverride = false,
-                                        reportMissingTypeStubs = false, -- Suppress missing type stubs
-                                        reportMissingTypeArgument = false,
-                                        reportUnknownMemberType = false,
-                                        reportUnknownVariableType = false,
-                                        reportUnknownParameterType = false,
-                                        reportUnknownArgumentType = false,
-                                        strictDictionaryInference = false,
-                                        strictListInference = false,
-                                        strictSetInference = false,
-                                    }
+                                    -- diagnosticSeverityOverrides = {
+                                    --     reportUnusedVariable = true, -- Should report unused variables
+                                    --     reportUnusedFunction = true, -- Should report unused functions
+                                    --     -- reportUntypedFunctionDecorator = false,
+                                    --     -- reportUntyedClassDecorator = false,
+                                    --     reportImplicitOverride = false,
+                                    --     reportMissingTypeStubs = false, -- Suppress missing type stubs
+                                    --     -- reportMissingTypeArgument = false,
+                                    --     -- reportUnknownVariableType = false,
+                                    --     -- reportUnknownMemberType = false,
+                                    --     -- reportUnknownParameterType = false,
+                                    --     -- reportUnknownArgumentType = false,
+                                    --     strictDictionaryInference = false,
+                                    --     strictListInference = false,
+                                    --     strictSetInference = false,
+                                    -- }
                                 }
                             }
                         },

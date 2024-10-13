@@ -12,13 +12,13 @@ return {
         local dap = require 'dap'
         local dapui = require 'dapui'
         return {
-            { '<F5>', dap.continue, desc = 'Debug: Start/Continue' },
-            { '<F1>', dap.step_into, desc = 'Debug: Step Into' },
-            { '<F2>', dap.step_over, desc = 'Debug: Step Over' },
-            { '<F3>', dap.step_out, desc = 'Debug: Step Out' },
-            { '<leader>b', dap.toggle_breakpoint, desc = 'Debug: Toggle Breakpoint' },
+            { '<F5>',      dap.continue,                                                             desc = 'Debug: Start/Continue' },
+            { '<F1>',      dap.step_into,                                                            desc = 'Debug: Step Into' },
+            { '<F2>',      dap.step_over,                                                            desc = 'Debug: Step Over' },
+            { '<F3>',      dap.step_out,                                                             desc = 'Debug: Step Out' },
+            { '<leader>b', dap.toggle_breakpoint,                                                    desc = 'Debug: Toggle Breakpoint' },
             { '<leader>B', function() dap.set_breakpoint(vim.fn.input 'Breakpoint condition: ') end, desc = 'Debug: Set Breakpoint' },
-            { '<F7>', dapui.toggle, desc = 'Debug: See last session result.' },
+            { '<F7>',      dapui.toggle,                                                             desc = 'Debug: See last session result.' },
             unpack(keys),
         }
     end,
@@ -37,30 +37,42 @@ return {
 
         dapui.setup {}
 
+        dap.set_log_level('TRACE')
         dap.listeners.after.event_initialized['dapui_config'] = dapui.open
         dap.listeners.before.event_terminated['dapui_config'] = dapui.close
         dap.listeners.before.event_exited['dapui_config'] = dapui.close
 
         -- Golang specific config
         require('dap-go').setup {
+            -- Delve configuration
             delve = {
-                detached = true,
+                initialize_timeout_sec = 20,
+                port = "${port}",
             },
         }
 
-        -- Manually add the Delve adapter
-        dap.adapters.go = {
-            type = 'executable';
-            command = 'dlv';  -- Ensure 'dlv' is in your PATH
-            args = {'dap'};
-        }
         dap.configurations.go = {
             {
-                type = 'go';
-                name = 'Debug';
-                request = 'launch';
-                program = '${file}';
+                type = "delve",
+                name = "Debug",
+                request = "launch",
+                program = "${file}",
+                cwd = "${fileDirname}",
             },
+            {
+                type = "delve",
+                name = "Debug test", -- you can add this configuration for debugging tests
+                request = "launch",
+                mode = "test",
+                program = "${file}"
+            },
+            {
+                type = "delve",
+                name = "Debug test (go.mod)",
+                request = "launch",
+                mode = "test",
+                program = "./${relativeFileDirname}"
+            }
         }
 
         -- Python specific config
@@ -108,4 +120,3 @@ return {
         }
     end,
 }
-
