@@ -8,43 +8,34 @@ return {
         'leoluz/nvim-dap-go',
         'mfussenegger/nvim-dap-python',
     },
-    keys = function(_, keys)
-        local dap = require 'dap'
-        local dapui = require 'dapui'
-        return {
-            { '<F5>',      dap.continue,                                                             desc = 'Debug: Start/Continue' },
-            { '<F1>',      dap.step_into,                                                            desc = 'Debug: Step Into' },
-            { '<F2>',      dap.step_over,                                                            desc = 'Debug: Step Over' },
-            { '<F3>',      dap.step_out,                                                             desc = 'Debug: Step Out' },
-            { '<leader>b', dap.toggle_breakpoint,                                                    desc = 'Debug: Toggle Breakpoint' },
-            { '<leader>B', function() dap.set_breakpoint(vim.fn.input 'Breakpoint condition: ') end, desc = 'Debug: Set Breakpoint' },
-            { '<F7>',      dapui.toggle,                                                             desc = 'Debug: See last session result.' },
-            unpack(keys),
-        }
-    end,
+    keys = {
+        { '<F5>',      function() require('dap').continue() end,                                             desc = 'Debug: Start/Continue' },
+        { '<F1>',      function() require('dap').step_into() end,                                            desc = 'Debug: Step Into' },
+        { '<F2>',      function() require('dap').step_over() end,                                            desc = 'Debug: Step Over' },
+        { '<F3>',      function() require('dap').step_out() end,                                             desc = 'Debug: Step Out' },
+        { '<leader>b', function() require('dap').toggle_breakpoint() end,                                    desc = 'Debug: Toggle Breakpoint' },
+        { '<leader>B', function() require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: ')) end, desc = 'Debug: Set Breakpoint' },
+        { '<F7>',      function() require('dapui').toggle() end,                                             desc = 'Debug: Toggle UI' },
+    },
     config = function()
         local dap = require 'dap'
         local dapui = require 'dapui'
+
+        -- Mason DAP setup
         require('mason-nvim-dap').setup {
             automatic_installation = true,
-            handlers = {},
-            ensure_installed = {
-                'delve',
-                'debugpy',
-                'cpptools',
-            },
+            ensure_installed = { 'delve', 'debugpy', 'cpptools' },
         }
 
-        dapui.setup {}
+        dapui.setup()
 
-        dap.set_log_level('TRACE')
+        -- Auto open/close DAP UI during debug sessions
         dap.listeners.after.event_initialized['dapui_config'] = dapui.open
         dap.listeners.before.event_terminated['dapui_config'] = dapui.close
         dap.listeners.before.event_exited['dapui_config'] = dapui.close
 
-        -- Golang specific config
+        -- Golang configuration with nvim-dap-go
         require('dap-go').setup {
-            -- Delve configuration
             delve = {
                 initialize_timeout_sec = 20,
                 port = "${port}",
@@ -61,34 +52,30 @@ return {
             },
             {
                 type = "delve",
-                name = "Debug test", -- you can add this configuration for debugging tests
+                name = "Debug test",
                 request = "launch",
                 mode = "test",
-                program = "${file}"
+                program = "${file}",
             },
             {
                 type = "delve",
                 name = "Debug test (go.mod)",
                 request = "launch",
                 mode = "test",
-                program = "./${relativeFileDirname}"
+                program = "./${relativeFileDirname}",
             }
         }
 
-        -- Python specific config
         require('dap-python').setup('/usr/bin/python3')
 
-        -- C++ specific config
+        -- C++ DAP setup
         dap.adapters.cppdbg = {
             id = 'cppdbg',
             type = 'executable',
             command = vim.fn.stdpath('data') .. '/mason/packages/cpptools/extension/debugAdapters/bin/OpenDebugAD7',
-            options = {
-                detached = false,
-            }
+            options = { detached = false }
         }
 
-        -- C++ debug configuration
         dap.configurations.cpp = {
             {
                 name = "Launch file",
@@ -100,21 +87,9 @@ return {
                 cwd = '${workspaceFolder}',
                 stopOnEntry = false,
                 setupCommands = {
-                    {
-                        text = '-enable-pretty-printing',
-                        description = 'Enable pretty printing',
-                        ignoreFailures = false
-                    },
-                    {
-                        text = 'skip -function std::*',
-                        description = 'Skip functions in std namespace',
-                        ignoreFailures = false
-                    },
-                    {
-                        text = 'skip -file /usr/include/*',
-                        description = 'Skip system include files',
-                        ignoreFailures = false
-                    },
+                    { text = '-enable-pretty-printing',   description = 'Enable pretty printing',          ignoreFailures = false },
+                    { text = 'skip -function std::*',     description = 'Skip functions in std namespace', ignoreFailures = false },
+                    { text = 'skip -file /usr/include/*', description = 'Skip system include files',       ignoreFailures = false },
                 },
             },
         }

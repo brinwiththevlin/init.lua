@@ -33,4 +33,4 @@ vim.opt.updatetime = 50
 -- Disable cursorline to avoid highlighting the entire line
 vim.opt.cursorline = true
 
-vim.opt.cursorlineopt = 'number'
+

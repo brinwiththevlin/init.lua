@@ -5,7 +5,7 @@ return {
         local todo = require("todo-comments")
         todo.setup {}
 
-        vim.keymap.set("n", "]t", todo.jump_next, {})
-        vim.keymap.set("n", "[t", todo.jump_prev, {})
+        vim.keymap.set("n", "]t", todo.jump_next, { desc = "next todo"})
+        vim.keymap.set("n", "[t", todo.jump_prev, { desc = "prev todo"})
     end
 }

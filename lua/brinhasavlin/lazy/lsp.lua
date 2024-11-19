@@ -107,22 +107,15 @@ return {
                                     typeCheckingMode = 'standard',
                                     ignore = { "~/.local/share/nvim/mason/packages/basedpyright/", "anaconda3/envs/research/lib/python3.12/site-packages/" },
                                     exclude = { "~/.local/share/nvim/mason/packages/basedpyright/", "anaconda3/envs/research/lib/python3.12/site-packages/" },
-                                    -- diagnosticSeverityOverrides = {
-                                    --     reportUnusedVariable = true, -- Should report unused variables
-                                    --     reportUnusedFunction = true, -- Should report unused functions
-                                    --     -- reportUntypedFunctionDecorator = false,
-                                    --     -- reportUntyedClassDecorator = false,
-                                    --     reportImplicitOverride = false,
-                                    --     reportMissingTypeStubs = false, -- Suppress missing type stubs
-                                    --     -- reportMissingTypeArgument = false,
-                                    --     -- reportUnknownVariableType = false,
-                                    --     -- reportUnknownMemberType = false,
-                                    --     -- reportUnknownParameterType = false,
-                                    --     -- reportUnknownArgumentType = false,
-                                    --     strictDictionaryInference = false,
-                                    --     strictListInference = false,
-                                    --     strictSetInference = false,
-                                    -- }
+                                    diagnosticSeverityOverrides = {
+                                        reportUnusedVariable = true, -- Should report unused variables
+                                        reportUnusedFunction = true, -- Should report unused functions
+                                        reportImplicitOverride = false,
+                                        reportMissingTypeStubs = false, -- Suppress missing type stubs
+                                        strictDictionaryInference = false,
+                                        strictListInference = false,
+                                        strictSetInference = false,
+                                    }
                                 }
                             }
                         },
