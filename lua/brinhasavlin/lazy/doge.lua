@@ -1,8 +1,10 @@
 return {
-    'kkoomen/vim-doge',
-    -- build = ':DogeInstall', -- Installs the Doge dependencies automatically
-    config = function()
-        -- Set the docstring standard for Python to Google style
-        vim.g.doge_doc_standard_python = 'google'
-    end,
+    {
+        "kkoomen/vim-doge",
+        build = ":call doge#install()", -- This installs necessary generators for vim-doge
+        config = function()
+            -- DoGe specific configurations
+            vim.g.doge_doc_standard_python = "google"  -- Example: Use Google docstrings for Python
+        end
+    }
 }

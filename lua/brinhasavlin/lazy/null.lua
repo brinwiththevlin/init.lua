@@ -1,5 +1,5 @@
 return {
-    "jose-elias-alvarez/null-ls.nvim",
+    "nvimtools/none-ls.nvim",
     setup = function()
         local null_ls = require("null-ls")
 
@@ -17,7 +17,6 @@ return {
                     extra_args = { "--ignore", "E501" },
                 }),
                 null_ls.builtins.diagnostics.mypy.with({
-                    extra_args = { "--ignore-missing-imports" },
                 }),
                 null_ls.builtins.code_actions.ruff,
 

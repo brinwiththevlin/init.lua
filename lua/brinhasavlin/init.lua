@@ -52,7 +52,7 @@ autocmd('LspAttach', {
         local opts = { buffer = e.buf }
         vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end,
             vim.tbl_extend("force", opts, { desc = "go to definition" }))
-        vim.keymap.set("n", "K", function() vim.lsp.buf.hover() end, vim.tbl_extend("force", opts, { desc = "show hover" }))
+        vim.keymap.set("n", "K", require("pretty_hover").hover, vim.tbl_extend("force", opts, { desc = "show hover" }))
         vim.keymap.set("n", "<leader>vws", function() vim.lsp.buf.workspace_symbol() end,
             vim.tbl_extend("force", opts, { desc = "search workspace symbols" }))
         vim.keymap.set("n", "<leader>vd", function() vim.diagnostic.open_float() end,
@@ -79,9 +79,19 @@ autocmd("FileType", {
         vim.opt_local.spell = true
     end,
 })
+--
+-- Disable SQL ftplugin <C-c> mapping interference
+autocmd("FileType", {
+  pattern = "sql",
+  callback = function()
+    -- Remove default <C-c> insert mode mapping set by sql.vim
+    pcall(vim.keymap.del, 'i', '<C-c>')
+  end,
+})
 
 
 
 vim.g.netrw_browse_split = 0
 vim.g.netrw_banner = 0
 vim.g.netrw_winsize = 25
+vim.g.loaded_sql_completion = 1

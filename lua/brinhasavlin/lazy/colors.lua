@@ -19,7 +19,7 @@ return {
         "rebelot/kanagawa.nvim",
         config = function()
             require("kanagawa").setup({
-                transparent = true,
+                -- transparent = true,
                 theme = "dark",
             })
         end
@@ -32,7 +32,7 @@ return {
         config = function()
             require("tokyonight").setup({
                 style = "storm",
-                transparent = true,
+                -- transparent = true,
                 terminal_colors = true,
                 styles = {
                     comments = { italic = false },
@@ -64,7 +64,7 @@ return {
         config = function()
             require("gruvbox").setup({
                 contrast = "soft",  -- Can be "hard", "soft", or "medium"
-                transparent_mode = true,
+                -- transparent_mode = true,
             })
         end
     },
@@ -74,7 +74,7 @@ return {
         "Mofiqul/dracula.nvim",
         config = function()
             require("dracula").setup({
-                transparent_bg = true,
+                -- transparent_bg = true,
                 italic_comment = false,
             })
         end
@@ -86,7 +86,7 @@ return {
         config = function()
             require("onedark").setup({
                 style = "darker",  -- Can be "dark", "darker", "cool", "deep", "warm", "warmer"
-                transparent = true,
+                -- transparent = true,
             })
         end
     },
@@ -98,7 +98,7 @@ return {
         config = function()
             require("catppuccin").setup({
                 flavour = "mocha",  -- Can be "latte", "frappe", "macchiato", or "mocha"
-                transparent_background = true,
+                -- transparent_background = true,
                 styles = {
                     comments = { "italic" },
                     keywords = { "bold" },
@@ -112,7 +112,7 @@ return {
     {
         "shaunsingh/nord.nvim",
         config = function()
-            vim.g.nord_disable_background = true
+            -- vim.g.nord_disable_background = true
             vim.g.nord_italic = false
             -- vim.cmd([[colorscheme nord]])
         end

@@ -12,7 +12,7 @@ return {
             -- Add this section to configure pickers
             pickers = {
                 colorscheme = {
-                    enable_preview = true,  -- Enable live preview for color schemes
+                    enable_preview = true, -- Enable live preview for color schemes
                 },
             },
         })
@@ -45,7 +45,6 @@ return {
         end, { desc = "neovim config" })
 
         -- Keybinding to open the colorscheme picker with live preview
-        vim.keymap.set('n', '<leader>cs', builtin.colorscheme, { desc = "colorscheme picker" })
+        vim.keymap.set('n', '<leader>cp', builtin.colorscheme, { desc = "colorscheme picker" })
     end
 }
-

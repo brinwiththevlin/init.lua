@@ -29,7 +29,6 @@ return {
             ensure_installed = {
                 "lua_ls",
                 "rust_analyzer",
-                "ruff",
                 "gopls",
                 "basedpyright",
                 "clangd" -- Added clangd for C++ support
@@ -39,17 +38,31 @@ return {
                     require("lspconfig")[server_name].setup {
                         capabilities = capabilities,
                         handlers = {
-                            ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
-                                border = "rounded",
-                                focusable = true,
-                                style = "minimal",
-                                source = "always",
-                                header = "",
-                                prefix = "",
-                            }),
-                            ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
-                                border = "rounded"
-                            }),
+                            handlers = {
+                                ["textDocument/hover"] = function(_, result, ctx, config)
+                                    local util = vim.lsp.util
+                                    config = config or {}
+                                    config.border = "rounded"
+                                    config.focus_id = ctx.method
+
+                                    if not (result and result.contents) then
+                                        return
+                                    end
+
+                                    local contents = util.convert_input_to_markdown_lines(result.contents)
+                                    contents = util.trim_empty_lines(contents)
+                                    if vim.tbl_isempty(contents) then
+                                        return
+                                    end
+
+                                    return util.open_floating_preview(contents, "markdown", config)
+                                end,
+
+                                ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
+                                    border = "rounded"
+                                }),
+                            }
+
                         }
                     }
                 end,
@@ -70,29 +83,6 @@ return {
                     vim.g.zig_fmt_autosave = 0
                 end,
 
-                ruff_lsp = function()
-                    local lspconfig = require("lspconfig")
-                    lspconfig.ruff_lsp.setup({
-                        capabilities = capabilities,
-                        init_options = {
-                            settings = {
-                                args = {}, -- Any specific arguments to Ruff
-                            },
-                        },
-                        settings = {
-                            ruff = {
-                                -- Enable workspace mode
-                                diagnosticMode = "workspace",
-                                args = {
-                                    "--select", "RET"
-                                }
-                                -- Optionally add more specific settings here
-                            },
-                        },
-                        root_dir = lspconfig.util.root_pattern(".git"), -- Set root directory for the workspace
-                    })
-                end,
-
                 basedpyright = function()
                     local lspconfig = require("lspconfig")
                     lspconfig.basedpyright.setup({
@@ -105,12 +95,12 @@ return {
                                     diagnosticMode = 'workspace',
                                     useLibraryCodeForTypes = true,
                                     typeCheckingMode = 'standard',
-                                    ignore = { "~/.local/share/nvim/mason/packages/basedpyright/", "anaconda3/envs/research/lib/python3.12/site-packages/" },
-                                    exclude = { "~/.local/share/nvim/mason/packages/basedpyright/", "anaconda3/envs/research/lib/python3.12/site-packages/" },
+                                    exclude = { "**/.venv", "**/__pycache__", "**/build", "**/dist", "**/.git", "**/basedpyright", "**/envs" },
                                     diagnosticSeverityOverrides = {
                                         reportUnusedVariable = true, -- Should report unused variables
                                         reportUnusedFunction = true, -- Should report unused functions
-                                        reportImplicitOverride = false,
+                                        -- reportImplicitOverride = false,
+                                        reportGenrealTypeIssue = true,
                                         reportMissingTypeStubs = false, -- Suppress missing type stubs
                                         strictDictionaryInference = false,
                                         strictListInference = false,
@@ -194,6 +184,55 @@ return {
                 header = "",
                 prefix = "",
             },
+        })
+
+        vim.api.nvim_create_autocmd("LspAttach", {
+            callback = function()
+                local util = vim.lsp.util
+                local pretty_hover = require("pretty_hover")
+
+                local html_entities = {
+                    ["&nbsp;"] = " ",
+                    ["&lt;"] = "<",
+                    ["&gt;"] = ">",
+                    ["&amp;"] = "&",
+                }
+
+                local function clean_entities(lines)
+                    for i, line in ipairs(lines) do
+                        for entity, replacement in pairs(html_entities) do
+                            line = line:gsub(entity, replacement)
+                        end
+                        -- Also fix escaped underscores
+                        line = line:gsub("\\_", "_")
+                        lines[i] = line
+                    end
+                    return lines
+                end
+
+                require("pretty_hover").hover = function()
+                    local util = vim.lsp.util
+                    local params = util.make_position_params()
+                    vim.lsp.buf_request(0, "textDocument/hover", params, function(_, result, ctx, _)
+                        if not (result and result.contents) then
+                            return
+                        end
+
+                        local contents = util.convert_input_to_markdown_lines(result.contents)
+                        contents = util.trim_empty_lines(contents)
+                        if vim.tbl_isempty(contents) then
+                            return
+                        end
+
+                        contents = clean_entities(contents)
+
+                        util.open_floating_preview(contents, "markdown", {
+                            border = "rounded",
+                            focus_id = ctx.method,
+                        })
+                    end)
+                end
+            end,
         })
     end
 }

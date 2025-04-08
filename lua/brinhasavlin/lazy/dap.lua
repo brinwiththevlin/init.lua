@@ -30,42 +30,16 @@ return {
         dapui.setup()
 
         -- Auto open/close DAP UI during debug sessions
-        dap.listeners.after.event_initialized['dapui_config'] = dapui.open
-        dap.listeners.before.event_terminated['dapui_config'] = dapui.close
-        dap.listeners.before.event_exited['dapui_config'] = dapui.close
+        dap.listeners.after.event_initialized['dapui_config'] = function() dapui.open() end
+        dap.listeners.before.event_terminated['dapui_config'] = function() dapui.close() end
+        dap.listeners.before.event_exited['dapui_config'] = function() dapui.close() end
 
-        -- Golang configuration with nvim-dap-go
-        require('dap-go').setup {
-            delve = {
-                initialize_timeout_sec = 20,
-                port = "${port}",
-            },
-        }
+        dap.set_log_level("TRACE")
 
-        dap.configurations.go = {
-            {
-                type = "delve",
-                name = "Debug",
-                request = "launch",
-                program = "${file}",
-                cwd = "${fileDirname}",
-            },
-            {
-                type = "delve",
-                name = "Debug test",
-                request = "launch",
-                mode = "test",
-                program = "${file}",
-            },
-            {
-                type = "delve",
-                name = "Debug test (go.mod)",
-                request = "launch",
-                mode = "test",
-                program = "./${relativeFileDirname}",
-            }
-        }
+        -- Golang configuration with nvim-dap-go (no extra setup arguments needed)
+        require('dap-go').setup()
 
+        -- Python DAP setup
         require('dap-python').setup('/usr/bin/python3')
 
         -- C++ DAP setup
@@ -93,5 +67,13 @@ return {
                 },
             },
         }
+
+        -- Add event listeners to apply Delve configurations if needed
+        -- dap.listeners.after.event_initialized['dap_default'] = function()
+        --     -- Set Delve to skip certain paths by default to prevent stepping into Go's standard library or module cache
+        --     dap.repl.run_command('config substitute-path /usr/local/go/src /non-existent-path')
+        --     dap.repl.run_command('config skipFiles /usr/local/go/src/*')
+        --     dap.repl.run_command('config skipFiles /go/pkg/mod/*')
+        -- end
     end,
 }

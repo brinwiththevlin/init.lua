@@ -73,3 +73,5 @@ vim.keymap.set(
     "oif err != nil {<CR>}<Esc>Oreturn err<Esc>",
     { desc = "error handling" }
 )
+
+vim.keymap.set('n', '<leader>cf', ':!pg_format % -o %<CR>', { desc = 'Format SQL file (pg_format)' })
