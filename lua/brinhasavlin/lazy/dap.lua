@@ -39,8 +39,7 @@ return {
         -- Golang configuration with nvim-dap-go (no extra setup arguments needed)
         require('dap-go').setup()
 
-        -- Python DAP setup
-        require('dap-python').setup('/usr/bin/python3')
+        require('dap-python').setup()
 
         -- C++ DAP setup
         dap.adapters.cppdbg = {
