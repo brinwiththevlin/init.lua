@@ -31,7 +31,7 @@ return {
                 "rust_analyzer",
                 "gopls",
                 "basedpyright",
-                "clangd" -- Added clangd for C++ support
+                "clangd", -- Added clangd for C++ support
             },
             handlers = {
                 function(server_name) -- default handler (optional)
@@ -92,24 +92,33 @@ return {
                                 analysis = {
                                     autoImportCompletion = true,
                                     autoSearchPaths = true,
-                                    diagnosticMode = 'workspace',
+                                    diagnosticMode = 'openFilesOnly',
                                     useLibraryCodeForTypes = true,
-                                    typeCheckingMode = 'standard',
-                                    exclude = { "**/.venv", "**/__pycache__", "**/build", "**/dist", "**/.git", "**/basedpyright", "**/envs" },
+                                    typeCheckingMode = 'recommended',
+                                    exclude = { "**/.venv", "**/__pycache__", "**/**cache", "**/build", "**/dist", "**/.git", "**/basedpyright", "**/envs" },
                                     diagnosticSeverityOverrides = {
-                                        reportUnusedVariable = true, -- Should report unused variables
-                                        reportUnusedFunction = true, -- Should report unused functions
-                                        -- reportImplicitOverride = false,
-                                        reportGenrealTypeIssue = true,
-                                        reportMissingTypeStubs = false, -- Suppress missing type stubs
-                                        strictDictionaryInference = false,
-                                        strictListInference = false,
-                                        strictSetInference = false,
+                                        reportUnusedVariable = "true", -- Should report unused variables
+                                        reportUnusedFunction = "true", -- Should report unused functions
+                                        reportExplicitAny = "none",
+                                        reportAny = "none",
+                                        reportGenrealTypeIssue = "true",
+                                        reportMissingTypeStubs = "none", -- Suppress missing type stubs
+                                        strictDictionaryInference = "none",
+                                        strictListInference = "none",
+                                        strictSetInference = "none",
                                     }
                                 }
                             }
                         },
 
+                    })
+                end,
+
+                ["sqls"] = function()
+                    local lspconfig = require("lspconfig")
+                    lspconfig.sqls.setup({
+                        capabilities = capabilities,
+                        cmd = { "sqls", "-config", vim.fn.getcwd() .. "/sqls/config.yaml" },
                     })
                 end,
 
@@ -149,6 +158,26 @@ return {
                         },
                     })
                 end,
+
+                ["metals"] = function()
+                    local metals_config = require("metals").bare_config()
+                    metals_config.capabilities = capabilities
+                    metals_config.init_options.statusBarProvider = "on"
+                    metals_config.settings = {
+                        metals = {
+                            superMethodLensesEnabled = true,
+                            showImplicitArguments = true,
+                        }
+                    }
+
+                    vim.api.nvim_create_autocmd("FileType", {
+                        pattern = { "scala", "sbt" },
+                        callback = function()
+                            require("metals").initialize_or_attach(metals_config)
+                        end,
+                    })
+                end,
+
             }
         })
 

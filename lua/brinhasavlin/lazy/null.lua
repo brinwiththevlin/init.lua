@@ -7,12 +7,12 @@ return {
             sources = {
                 -- Python
                 null_ls.builtins.formatting.black.with({
-                    extra_args = { "--line-length", "80" },
+                    extra_args = { "--line-length", "120" },
                 }),
                 null_ls.builtins.formatting.isort.with({
                     extra_args = { "--profile", "black" },
 
-                }).
+                }),
                     null_ls.builtins.diagnostics.ruff.with({
                     extra_args = { "--ignore", "E501" },
                 }),
