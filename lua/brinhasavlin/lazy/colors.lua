@@ -1,6 +1,6 @@
 -- Function to apply color scheme and transparent background
 function ColorMyPencils(color)
-    color = color or "rose-pine"  -- Default to rose-pine if no color is specified
+    color = color or "rose-pine" -- Default to rose-pine if no color is specified
     vim.cmd.colorscheme(color)
 
     -- Apply transparent background
@@ -22,6 +22,7 @@ return {
                 -- transparent = true,
                 theme = "dark",
             })
+            vim.cmd([[colors kanagawa-dragon]])
         end
     },
 
@@ -55,6 +56,7 @@ return {
                     italic = false,
                 },
             })
+            -- vim.cmd([[colors rose-pine]])
         end
     },
 
@@ -63,7 +65,7 @@ return {
         "ellisonleao/gruvbox.nvim",
         config = function()
             require("gruvbox").setup({
-                contrast = "soft",  -- Can be "hard", "soft", or "medium"
+                contrast = "soft", -- Can be "hard", "soft", or "medium"
                 -- transparent_mode = true,
             })
         end
@@ -85,7 +87,7 @@ return {
         "navarasu/onedark.nvim",
         config = function()
             require("onedark").setup({
-                style = "darker",  -- Can be "dark", "darker", "cool", "deep", "warm", "warmer"
+                style = "darker", -- Can be "dark", "darker", "cool", "deep", "warm", "warmer"
                 -- transparent = true,
             })
         end
@@ -97,14 +99,14 @@ return {
         name = "catppuccin",
         config = function()
             require("catppuccin").setup({
-                flavour = "mocha",  -- Can be "latte", "frappe", "macchiato", or "mocha"
+                flavour = "mocha", -- Can be "latte", "frappe", "macchiato", or "mocha"
                 -- transparent_background = true,
                 styles = {
                     comments = { "italic" },
                     keywords = { "bold" },
                 },
             })
-            vim.cmd([[colorscheme catppuccin]])
+            -- vim.cmd([[colorscheme catppuccin]])
         end
     },
 
@@ -118,5 +120,3 @@ return {
         end
     },
 }
-
-

@@ -9,7 +9,7 @@ vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "scroll down" })
 vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "scroll up" })
 vim.keymap.set("n", "n", "nzzzv", { desc = "center after search" })
 vim.keymap.set("n", "N", "Nzzzv", { desc = "center after search" })
--- vim.keymap.set("n", "<leader>zig", "<cmd>LspRestart<cr>")
+vim.keymap.set("n", "<leader>zig", "<cmd>LspRestart<cr>")
 
 -- vim.keymap.set("n", "<leader>vwm", function()
 --     require("vim-with-me").StartVimWithMe()
@@ -75,3 +75,9 @@ vim.keymap.set(
 )
 
 vim.keymap.set('n', '<leader>cf', ':!pg_format % -o %<CR>', { desc = 'Format SQL file (pg_format)' })
+
+-- in your keymaps setup file
+vim.keymap.set('n', '<C-n>', '<cmd>NvimTreeToggle<CR>', { desc = 'Toggle file tree' })
+vim.keymap.set('n', '<leader>t', '<cmd>NvimTreeFocus<CR>', { desc = 'Toggle file tree' })
+
+

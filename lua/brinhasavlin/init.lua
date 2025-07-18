@@ -82,12 +82,47 @@ autocmd("FileType", {
 --
 -- Disable SQL ftplugin <C-c> mapping interference
 autocmd("FileType", {
-  pattern = "sql",
-  callback = function()
-    -- Remove default <C-c> insert mode mapping set by sql.vim
-    pcall(vim.keymap.del, 'i', '<C-c>')
-  end,
+    pattern = "sql",
+    callback = function()
+        -- Remove default <C-c> insert mode mapping set by sql.vim
+        pcall(vim.keymap.del, 'i', '<C-c>')
+    end,
 })
+
+vim.api.nvim_create_user_command("NewPyProject", function(opts)
+    local project_name = opts.args
+    if project_name == "" then
+        print("Usage: :NewPyProject <project_name>")
+        return
+    end
+
+    local files = {
+        ".gitignore",
+        "README.md",
+        "pyproject.toml",
+        "requirements.txt",
+        project_name .. "/__init__.py",
+        "tests/test_example.py",
+    }
+
+    for _, file in ipairs(files) do
+        local full_path = project_name .. "/" .. file
+        local dir = vim.fn.fnamemodify(full_path, ":h")
+
+        if vim.fn.isdirectory(dir) == 0 then
+            vim.fn.mkdir(dir, "p")
+        end
+
+        if vim.fn.filereadable(full_path) == 0 then
+            vim.fn.writefile({}, full_path)
+        end
+    end
+
+    print("Project '" .. project_name .. "' initialized.")
+end, {
+    nargs = 1,
+})
+
 
 
 
