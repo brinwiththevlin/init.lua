@@ -15,7 +15,8 @@ return {
                 side = "left",
             },
             filters       = {
-                dotfiles = false,
+                dotfiles = true,
+                git_ignored = false,
                 custom = { "^.git$" },
             },
             renderer      = {

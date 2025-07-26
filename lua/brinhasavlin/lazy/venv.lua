@@ -1,43 +1,17 @@
-return {}
--- return {
---     "linux-cultist/venv-selector.nvim",
---     branch = "regexp", -- use the regexp branch
---     lazy = false,
---     dependencies = {
---         "neovim/nvim-lspconfig",
---         "nvim-telescope/telescope.nvim",
---         "sharkdp/fd",
---         "mfussenegger/nvim-dap-python",
---     },
---     opts = {
---         -- Automatically search common venv paths and Conda envs
---         name = { ".venv", "env", "venv" },
---         search_venv_managers = true, -- enables Conda, Poetry, Pipenv detection
---         search_workspace = true,
---         venv_search_paths = {
---             ".",                           -- project-local
---             "~/.virtualenvs",              -- global virtualenvs
---             "~/miniconda3/envs",           -- Conda default
---             "/home/brinhasavlin/anaconda3/envs", -- your system-specific Conda path
---         },
---
---         changed_venv_hooks = {
---             function(venv_path)
---                 local is_windows = vim.loop.os_uname().version:match("Windows")
---                 local python_bin = is_windows and "\\Scripts\\python.exe" or "/bin/python"
---                 local py = venv_path .. python_bin
---
---                 if vim.fn.executable(py) == 1 then
---                     vim.g.python3_host_prog = py
---                     require("dap-python").setup(py)
---                 else
---                     vim.notify("Invalid Python binary: " .. py, vim.log.levels.WARN)
---                 end
---             end,
---         },
---     },
---     keys = {
---         { "<leader>vs", "<cmd>VenvSelect<cr>",       desc = "Select Python venv" },
---         { "<leader>vc", "<cmd>VenvSelectCached<cr>", desc = "Select cached venv" },
---     },
--- }
+return {
+  "linux-cultist/venv-selector.nvim",
+  dependencies = {
+    "neovim/nvim-lspconfig",
+    "mfussenegger/nvim-dap", "mfussenegger/nvim-dap-python", --optional
+    { "nvim-telescope/telescope.nvim", branch = "0.1.x", dependencies = { "nvim-lua/plenary.nvim" } },
+  },
+  lazy = false,
+  branch = "regexp", -- This is the regexp branch, use this for the new version
+  keys = {
+    { "<leader>vp", "<cmd>VenvSelect<cr>" },
+  },
+  ---@type venv-selector.Config
+  opts = {
+    -- Your settings go here
+  },
+}

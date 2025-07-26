@@ -14,14 +14,28 @@ return {
     },
 
     config = function()
+        -- CORRECTED: This is the recommended way to fix the position_encoding warnings.
+        -- It sets a global standard for how Neovim handles diagnostics from all LSP servers.
+        vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+            vim.lsp.diagnostic.on_publish_diagnostics,
+            {
+                position_encoding = "utf-16",
+            }
+        )
+
         local cmp = require('cmp')
         local cmp_lsp = require("cmp_nvim_lsp")
+
+        -- This more robustly merges capabilities from both the LSP
+        -- protocol and nvim-cmp.
         local capabilities = vim.tbl_deep_extend(
             "force",
-            {},
             vim.lsp.protocol.make_client_capabilities(),
             cmp_lsp.default_capabilities()
         )
+        -- While the handler above is the main fix, setting it in capabilities
+        -- is also good practice for clients that check for it directly.
+        capabilities.general.positionEncodings = { "utf-16" }
 
         require("fidget").setup({})
         require("mason").setup()
@@ -38,32 +52,30 @@ return {
                     require("lspconfig")[server_name].setup {
                         capabilities = capabilities,
                         handlers = {
-                            handlers = {
-                                ["textDocument/hover"] = function(_, result, ctx, config)
-                                    local util = vim.lsp.util
-                                    config = config or {}
-                                    config.border = "rounded"
-                                    config.focus_id = ctx.method
+                            ["textDocument/hover"] = function(_, result, ctx, config)
+                                local util = vim.lsp.util
+                                config = config or {}
+                                config.border = "rounded"
+                                config.focus_id = ctx.method
 
-                                    if not (result and result.contents) then
-                                        return
-                                    end
+                                if not (result and result.contents) then
+                                    return
+                                end
 
-                                    local contents = util.convert_input_to_markdown_lines(result.contents)
-                                    contents = util.trim_empty_lines(contents)
-                                    if vim.tbl_isempty(contents) then
-                                        return
-                                    end
+                                local contents = util.convert_input_to_markdown_lines(result.contents)
+                                contents = util.trim_empty_lines(contents)
+                                if vim.tbl_isempty(contents) then
+                                    return
+                                end
 
-                                    return util.open_floating_preview(contents, "markdown", config)
-                                end,
+                                return util.open_floating_preview(contents, "markdown", config)
+                            end,
 
-                                ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
-                                    border = "rounded"
-                                }),
-                            }
-
+                            ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
+                                border = "rounded"
+                            }),
                         }
+
                     }
                 end,
 
@@ -118,7 +130,6 @@ return {
                     local lspconfig = require("lspconfig")
                     lspconfig.sqls.setup({
                         capabilities = capabilities,
-                        cmd = { "sqls", "-config", vim.fn.getcwd() .. "/sqls/config.yaml" },
                     })
                 end,
 

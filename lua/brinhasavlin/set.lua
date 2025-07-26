@@ -32,5 +32,6 @@ vim.opt.updatetime = 50
 
 -- Disable cursorline to avoid highlighting the entire line
 vim.opt.cursorline = true
+vim.opt.guicursor = "n-v-c-sm:block,i-ci-ve:ver25,r-cr-o:hor20"
 
 

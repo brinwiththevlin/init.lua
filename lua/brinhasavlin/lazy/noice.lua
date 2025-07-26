@@ -1,49 +1,69 @@
 -- File: lua/plugins/noice.lua
 -- Plugin specification for noice.nvim (enhanced UI for messages, cmdline, and popup menus)
 return {
-  "folke/noice.nvim",
-  event = "VimEnter",  -- load on startup
-  dependencies = {
-    "MunifTanjim/nui.nvim",        -- UI component library
-    "rcarriga/nvim-notify",       -- optional notification backend
-  },
-  opts = {
-    -- Override the default lsp markdown renderer
-    lsp = {
-      override = {
-        ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
-        ['vim.lsp.util.stylize_markdown'] = true,
-        ['cmp.entry.get_documentation'] = true,
-      },
-      hover = { enabled = true },      -- enable hover docs
-      signature = { enabled = false }, -- disable signature help
+    "folke/noice.nvim",
+    event = "VimEnter",
+    dependencies = {
+        "MunifTanjim/nui.nvim",
+        "stevearc/dressing.nvim",
+        "rcarriga/nvim-notify",
     },
-    -- Use native notification window
-    notify = { enabled = true, view = "notify" },
-    -- Configure the command-line UI
-    cmdline = {
-      enabled = true,
-      view = "cmdline_popup",
-      format = {
-        cmdline = { pattern = "^:", icon = ":", lang = "vim" },
-      },
-    },
-    -- Enable the popup menu, e.g., for completion
-    popupmenu = { enabled = true, backend = "nui" },
-    -- Route messages through the noice UI
-    messages = {
-      enabled = true,
-      view = "mini",
-      view_error = "notify",
-      view_warn = "notify",
-      view_history = "messages",
-      view_search = "virtualtext",
-    },
-  },
-  config = function(_, opts)
-    require("noice").setup(opts)
-    -- optional: route vim.notify to noice
-    vim.notify = require("noice").api.notify
-  end,
-}
+    opts = {
+        -- Configure how LSP messages are handled
+        lsp = {
+            override = {
+                ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
+                ['vim.lsp.util.stylize_markdown'] = true,
+                ['cmp.entry.get_documentation'] = true,
+            },
+            hover = { enabled = true },     -- enable hover docs
+            signature = { enabled = true }, -- disable signature help
+        },
 
+        -- Sensible presets for a good user experience
+        presets = {
+            command_palette = true,       -- position command palette at the top
+            long_message_to_split = true, -- long messages will be sent to a split
+            inc_rename = false,           -- enables an input dialog for inc-rename.nvim
+            lsp_doc_border = true,        -- add a border to lsp doc hovers
+        },
+
+        -- Route messages through the noice UI
+        messages = {
+            enabled = true,
+            view = "mini",
+            view_error = "notify",
+            view_warn = "notify",
+            view_history = "messages",
+            view_search = "virtualtext",
+        },
+
+        -- Configure the command-line UI with more detailed formatting
+        cmdline = {
+            enabled = true,
+            view = "cmdline_popup",
+            format = {
+                cmdline = { pattern = "^:", icon = "", lang = "vim" },
+                search_down = { kind = "search", pattern = "^/", icon = " ", lang = "regex" },
+                search_up = { kind = "search", pattern = "^%?", icon = " ", lang = "regex" },
+                filter = { pattern = "^:%s*!", icon = "$", lang = "bash" },
+                lsp_rename = { kind = "rename", icon = "󰑕", lang = "vim" },
+                help = { pattern = "^:%s*he?l?p?%s+", icon = "" },
+            },
+        },
+
+        -- Use nui for the popup menu (e.g., for completion)
+        popupmenu = {
+            enabled = true,
+            backend = "nui",
+        },
+    },
+    config = function(_, opts)
+        -- It's important that dressing is set up BEFORE noice
+        require("dressing").setup()
+        require("noice").setup(opts)
+
+        -- Optional: route vim.notify to noice for a consistent look
+        vim.notify = require("noice").api.notify
+    end,
+}

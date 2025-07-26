@@ -55,8 +55,6 @@ vim.keymap.set("n", "<leader>dc", '<Cmd>lua require("dapui").close()<CR>',
 --     "oif err != nil {<CR>}<Esc>Oreturn err<Esc>"
 -- )
 
-vim.keymap.set("n", "<leader>vpp", "<cmd>e ~/.dotfiles/nvim/.config/nvim/lua/theprimeagen/packer.lua<CR>",
-    { desc = "packer config" });
 vim.keymap.set("n", "<leader>mr", "<cmd>CellularAutomaton make_it_rain<CR>", { desc = "make it rain" });
 -- Map """ in insert mode to insert six double quotes and place the cursor in the middle
 vim.api.nvim_set_keymap('n', '"""', 'O""""""<Esc>2hi',
