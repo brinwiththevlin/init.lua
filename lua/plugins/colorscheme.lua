@@ -1,12 +1,111 @@
-return {
-  -- add gruvbox
-  { "ellisonleao/gruvbox.nvim" },
+-- Function to apply color scheme and transparent background
+function ColorMyPencils(color)
+  color = color or "rose-pine" -- Default to rose-pine if no color is specified
+  vim.cmd.colorscheme(color)
 
-  -- Configure LazyVim to load gruvbox
+  -- Apply transparent background
+  vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
+  vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
+end
+
+return {
+  -- Erik Backman's brightburn color scheme
   {
-    "LazyVim/LazyVim",
-    opts = {
-      colorscheme = "gruvbox",
-    },
+    "erikbackman/brightburn.vim",
+  },
+
+  -- Kanagawa color scheme
+  {
+    "rebelot/kanagawa.nvim",
+    config = function()
+      require("kanagawa").setup({
+        -- transparent = true,
+        theme = "dark",
+      })
+      vim.cmd([[colors kanagawa-dragon]])
+    end,
+  },
+
+  -- Tokyo Night color scheme
+  {
+    "folke/tokyonight.nvim",
+    lazy = false,
+    config = function()
+      require("tokyonight").setup({
+        style = "storm",
+        -- transparent = true,
+        terminal_colors = true,
+        styles = {
+          comments = { italic = false },
+          keywords = { italic = false },
+          sidebars = "dark",
+          floats = "dark",
+        },
+      })
+    end,
+  },
+
+  -- Rose Pine color scheme
+  {
+    "rose-pine/neovim",
+    name = "rose-pine",
+    config = function()
+      require("rose-pine").setup({
+        disable_background = true,
+        styles = {
+          italic = false,
+        },
+      })
+      -- vim.cmd([[colors rose-pine]])
+    end,
+  },
+
+  -- Gruvbox color scheme
+  {
+    "ellisonleao/gruvbox.nvim",
+    config = function()
+      require("gruvbox").setup({
+        contrast = "soft", -- Can be "hard", "soft", or "medium"
+        -- transparent_mode = true,
+      })
+    end,
+  },
+
+  -- Dracula color scheme
+  {
+    "Mofiqul/dracula.nvim",
+    config = function()
+      require("dracula").setup({
+        -- transparent_bg = true,
+        italic_comment = false,
+      })
+    end,
+  },
+
+  -- OneDark color scheme
+  {
+    "navarasu/onedark.nvim",
+    config = function()
+      require("onedark").setup({
+        style = "darker", -- Can be "dark", "darker", "cool", "deep", "warm", "warmer"
+        -- transparent = true,
+      })
+    end,
+  },
+
+  -- Catppuccin color scheme
+  {
+    "catppuccin/nvim",
+    name = "catppuccin",
+  },
+
+  -- Nord color scheme
+  {
+    "shaunsingh/nord.nvim",
+    config = function()
+      -- vim.g.nord_disable_background = true
+      vim.g.nord_italic = false
+      -- vim.cmd([[colorscheme nord]])
+    end,
   },
 }
